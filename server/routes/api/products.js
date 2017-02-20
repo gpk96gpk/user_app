@@ -8,13 +8,10 @@ module.exports = () => {
 		Product
 		  .query()
 		  .join('storage as s', 'products.serial_number', 's.serial_number')
-		  .select('name','price','s.production_price','difference')
+		  .select('name','price','s.production_price')
 		  
-		  var promise = queryBuilder.map(x => {
-			x.difference = x.price - x.production_price;
-			return x;
-		  })
-		  .orderBy('difference','desc')
+
+
 		  .then(products => {
 		    console.log('there are', products.length, 'Products in total');
 		    res.json(products);
@@ -45,12 +42,19 @@ module.exports = () => {
 			.join('storage as s', 'products.serial_number', 's.serial_number')
 			//.orderBy('difference', 'desc')
 			.then(products => {
-				const withDifferences = products
-					.map(x => {
-						x.difference = x.price - x.production_price;
-						return x;
-					})
+				products.map(x => {
+					delete x.color;
+					delete x.size;
+					delete x.country;
+					
+					x.difference = x.price - x.production_price;
+					return x;
+				})
 			// const sorted = _.orderBy(withDifferences, ['difference'], 'desc');
+			products.sort((a, b) => {
+				return a.difference - b.difference;
+			});
+			res.json(products);
 			
 			})
 			.catch(err => {

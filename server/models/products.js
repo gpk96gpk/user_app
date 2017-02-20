@@ -22,4 +22,8 @@ Product.jsonSchema = {
     }
   }
 
+// Product.relationMapping
+// {
+  
+// }
 module.exports = Product;
